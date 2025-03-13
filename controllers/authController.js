@@ -7,10 +7,6 @@ const generateToken = async function (user) {
   const token = jwt.sign({ _id: user._id }, `${process.env.SECRET}`, {
     expiresIn: 60 * 60,
   });
-  /* user.tokens.push({ token });
-  await user.save(); */
-  // end commented code
-
   return token;
 };
 exports.register = async function (req, res) {
@@ -23,7 +19,6 @@ exports.register = async function (req, res) {
       password: req.body.password,
     });
     const token = await generateToken(newUser);
-    // save the user
     await newUser.save();
     res.json({
       success: true,
@@ -67,7 +62,7 @@ exports.authCheck = async (req, res, next) => {
       throw new Error();
     }
     req.token = token;
-    req.user = user; //route hanlder now will not have to fetch the user account
+    req.user = user;
     next();
   } catch (e) {
     res.status(401).send({ error: "Please authenticate." });
